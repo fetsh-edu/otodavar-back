@@ -8,10 +8,18 @@ class Users::SessionsController < Devise::SessionsController
 
   def jwt
     jwt = JwtVerifier.call(params[:jwt])
-    user = User.find_or_create_by(email: jwt[0]["email"])
+    user = User.find_or_initialize_by(email: jwt[0]["email"])
+    user.avatar = jwt[0]["picture"]
+    user.name = jwt[0]["name"]
+    user.save
     self.resource = user
     sign_in(resource_name, resource)
     respond_with resource, location: after_sign_in_path_for(resource)
+  rescue StandardError => e_
+    Rails.logger.info e_.full_message
+    render json: {
+      status: {message: "User couldn't be logged in."}
+    }, status: :unprocessable_entity
   end
 
   private
