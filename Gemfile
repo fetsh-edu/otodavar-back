@@ -19,7 +19,9 @@ gem "rack-cors"
 gem 'devise'
 gem 'devise-jwt'
 gem 'devise_uid'
-gem 'fast_jsonapi'
+# gem 'fast_jsonapi'
+gem 'jsonapi-serializer'
+gem 'api_error_handler'
 
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
