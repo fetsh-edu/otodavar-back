@@ -10,23 +10,56 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: self
 
   has_many :friendships,
-           ->(user) { FriendshipsQuery.both_ways(user_id: user.id) },
+           ->(user) {
+              FriendshipsQuery
+                .both_ways(user_id: user.id)
+                .where(confirmed: true) },
            inverse_of: :user,
            dependent: :destroy
 
+
+  has_many  :outgoing_friend_requests,
+            ->() { where(confirmed: false) },
+            inverse_of: :user,
+            class_name: "Friendship",
+            dependent: :destroy
+
+  has_many  :incoming_friend_requests,
+            ->() { where(confirmed: false) },
+            inverse_of: :user,
+            foreign_key: :friend_id,
+            class_name: "Friendship",
+            dependent: :destroy
+
   has_many :friends,
-           ->(user) { UsersQuery.friends(user_id: user.id, scope: true) },
+           ->(user) {
+             UsersQuery.friends(user_id: user.id, scope: true)
+           },
            through: :friendships
 
   def add_friend(user)
     return if id == user.id
     return if friends_with?(user)
-    friends << user
+    outgoing_friend_requests.create(friend: user)
   end
 
   def remove_friend(user)
     return if id == user.id
-    friends.delete(user)
+    Friendship.between(user, self).delete_all
+  end
+
+  def friend_status_of(user)
+    if id == user.id
+      "me"
+    elsif friends.exists?(user.id)
+      "friend"
+    elsif outgoing_friend_requests.where(friend_id: user.id).exists?
+      "requested"
+    elsif incoming_friend_requests.where(user_id: user.id).exists?
+      "wannabe"
+    else
+      "unknown"
+    end
   end
 
   def friends_with?(user)

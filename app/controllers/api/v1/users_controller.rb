@@ -10,13 +10,41 @@ class Api::V1::UsersController < Api::ApiController
   def friend
     user = User.find_by_uid!(params[:id])
     current_user.add_friend(user)
-    respond_with user.reload
+    resource = if params[:resource].present?
+                 User.find_by_uid!(params[:resource])
+               else
+                 user
+               end
+    respond_with resource.reload
   end
 
   def unfriend
     user = User.find_by_uid!(params[:id])
     current_user.remove_friend(user)
-    respond_with user
+    resource = if params[:resource].present?
+                 User.find_by_uid!(params[:resource])
+               else
+                 user
+               end
+    respond_with resource.reload
+  end
+
+  def accept
+    user = User.find_by_uid!(params[:id])
+    friend_request = user.outgoing_friend_requests.where(friend_id: current_user.id).first
+    if friend_request.present?
+      friend_request.confirmed = true
+      friend_request.save
+      Rails.logger.info("aaaaaaaaaaaaa #{params[:resource]}")
+      resource = if params[:resource].present?
+                   User.find_by_uid!(params[:resource])
+                 else
+                   user
+                 end
+      respond_with resource.reload
+    else
+      raise ActiveRecord::RecordNotFound
+    end
   end
 
   private
