@@ -38,5 +38,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
+  # mount ActionCable.server => '/cable'
+
   match '*path', to: 'application#error404', via: :all
 end
