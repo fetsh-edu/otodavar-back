@@ -9,10 +9,14 @@ class AcceptFriendshipService < ApplicationService
   def call
     request.confirmed = true
     if request.save
-      Notification.create(
+      payload = Notification::PAYLOAD[:friend_accept].call(request.friend)
+      notification = Notification.create(
         user_id: request.user_id,
-        payload: Notification::PAYLOAD[:friend_accept].call(request.friend)
+        payload: payload
       )
+      if notification.present?
+        NotificationsChannel.broadcast_to(request.user, NotificationSerializer.new(notification).serializable_hash[:data][:attributes])
+      end
     end
   end
 
