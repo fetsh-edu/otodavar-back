@@ -2,6 +2,7 @@ class Api::V1::UsersController < Api::ApiController
   # protect_from_forgery with: :exception
   before_action :authenticate_user!
   respond_to :json
+
   def show
     resource = User.find_by_uid(params[:id])
     respond_with resource
@@ -9,7 +10,7 @@ class Api::V1::UsersController < Api::ApiController
 
   def friend
     user = User.find_by_uid!(params[:id])
-    current_user.add_friend(user)
+    RequestFriendshipsService.new(from: current_user, to: user).call
     resource = if params[:resource].present?
                  User.find_by_uid!(params[:resource])
                else
@@ -33,9 +34,7 @@ class Api::V1::UsersController < Api::ApiController
     user = User.find_by_uid!(params[:id])
     friend_request = user.outgoing_friend_requests.where(friend_id: current_user.id).first
     if friend_request.present?
-      friend_request.confirmed = true
-      friend_request.save
-      Rails.logger.info("aaaaaaaaaaaaa #{params[:resource]}")
+      AcceptFriendshipService.call(friend_request)
       resource = if params[:resource].present?
                    User.find_by_uid!(params[:resource])
                  else

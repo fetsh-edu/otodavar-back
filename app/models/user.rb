@@ -9,6 +9,8 @@ class User < ApplicationRecord
          :uid,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  has_many :notifications
+
   has_many :friendships,
            ->(user) {
               FriendshipsQuery

@@ -1,4 +1,7 @@
 class Friendship < ApplicationRecord
+  # Not perfect:
+  # https://stackoverflow.com/questions/37244283/how-to-model-a-mutual-friendship-in-rails
+
   belongs_to :user
   belongs_to :friend, class_name: 'User'
 
