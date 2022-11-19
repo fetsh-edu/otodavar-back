@@ -20,6 +20,7 @@ gem 'devise'
 gem 'devise-jwt'
 gem 'devise_uid'
 gem 'panko_serializer'
+gem 'interactor', '~> 3.0'
 gem 'api_error_handler'
 
 
