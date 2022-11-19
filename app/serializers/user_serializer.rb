@@ -5,6 +5,7 @@ class UserSerializer < Panko::Serializer
 
   FILTERS = {
     simple:       { only: [ :email, :avatar, :name, :uid ] },
+    me:           { only: [ :email, :avatar, :name, :uid, :friends, :incoming_friends, :outgoing_friends ] },
     full:         {},
     friend:       { only: [ :email, :avatar, :name, :uid, :games_count, :friends_count, :friends ] },
     acquaintance: { only: [ :email, :avatar, :name, :uid, :games_count, :friends_count ] }
