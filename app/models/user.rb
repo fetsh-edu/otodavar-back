@@ -42,10 +42,27 @@ class User < ApplicationRecord
            through: :incoming_friend_requests
 
   has_many :friends,
-  ->(user) {
+           ->(user) {
              UsersQuery.friends(user_id: user.id, scope: true)
            },
-  through: :friendships
+           through: :friendships
+
+  has_many :outgoing_games,
+           class_name: "Game",
+           foreign_key: :player_1_id,
+           dependent: :destroy
+
+  has_many :incoming_games,
+           class_name: "Game",
+           foreign_key: :player_2_id,
+           dependent: :destroy
+
+  has_many :games,
+           -> (user) {
+             Game.all.unscope(where: :user_id).where(player_1_id: user.id).or(Game.all.where(player_2_id: user.id))
+           },
+           inverse_of: :player_1,
+           dependent: :destroy
 
 
   def add_friend(user)

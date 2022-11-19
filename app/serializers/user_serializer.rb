@@ -1,13 +1,13 @@
 class UserSerializer < Panko::Serializer
 
-  attributes :uid, :email, :avatar, :name, :friend_status,
-             :games_count, :friends, :friends_count#,
+  attributes :uid, :email, :avatar, :name,
+             :games_count, :friends_count
 
   FILTERS = {
-    simple: { only: [ :email, :avatar, :name, :friend_status, :uid ] },
-    full: {},
-    friend: { only: [ :email, :avatar, :name, :friend_status, :uid, :games_count, :friends, :friends_count ] },
-    acquaintance: { only: [ :email, :avatar, :name, :friend_status, :uid, :games_count, :friends_count ] }
+    simple:       { only: [ :email, :avatar, :name, :uid ] },
+    full:         {},
+    friend:       { only: [ :email, :avatar, :name, :uid, :games_count, :friends_count, :friends ] },
+    acquaintance: { only: [ :email, :avatar, :name, :uid, :games_count, :friends_count ] }
   }
   def self.scope_builder(current_user, user)
     if current_user.id == user.id
@@ -19,11 +19,7 @@ class UserSerializer < Panko::Serializer
     end
   end
 
-  def friend_status
-    current_user.friend_status_of(object)
-  end
-
-  def games_count = 0
+  def games_count = object.games.count
 
   def friends_count = object.friends.count
 
