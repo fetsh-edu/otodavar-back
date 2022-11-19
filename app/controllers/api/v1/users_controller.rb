@@ -31,15 +31,21 @@ class Api::V1::UsersController < Api::ApiController
   end
 
   def accept
+
     user = User.find_by_uid!(params[:id])
+
     friend_request = user.outgoing_friend_requests.where(friend_id: current_user.id).first
+
     if friend_request.present?
+
       AcceptFriendshipService.call(friend_request)
+
       resource = if params[:resource].present?
                    User.find_by_uid!(params[:resource])
                  else
                    user
                  end
+
       respond_with resource.reload
     else
       raise ActiveRecord::RecordNotFound
@@ -49,7 +55,11 @@ class Api::V1::UsersController < Api::ApiController
   private
 
   def respond_with(resource, _opts = {})
-    render json: PlayerSerializer.new(resource, {params: {current_user: current_user}}).serializable_hash[:data][:attributes],
+    json = UserSerializer.new(
+             context: {current_user: current_user},
+             scope: UserSerializer.scope_builder(current_user, resource)
+           ).serialize_to_json(resource)
+    render json: json,
            status: :ok
   end
 

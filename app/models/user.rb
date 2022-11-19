@@ -33,11 +33,20 @@ class User < ApplicationRecord
             class_name: "Friendship",
             dependent: :destroy
 
+  has_many :outgoing_friends,
+           source: :friend,
+           through: :outgoing_friend_requests
+
+  has_many :incoming_friends,
+           source: :user,
+           through: :incoming_friend_requests
+
   has_many :friends,
-           ->(user) {
+  ->(user) {
              UsersQuery.friends(user_id: user.id, scope: true)
            },
-           through: :friendships
+  through: :friendships
+
 
   def add_friend(user)
     return if id == user.id

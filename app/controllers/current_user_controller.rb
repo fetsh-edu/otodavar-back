@@ -1,6 +1,13 @@
 class CurrentUserController < ApplicationController
   before_action :authenticate_user!
   def index
-    render json: UserSerializer.new(current_user, {params: {current_user: current_user}}).serializable_hash, status: :ok
+    render(
+      status: :ok,
+      json: Panko::Response.create do |r|
+        {
+          user: r.serializer(current_user, UserSerializer, context: { current_user: current_user})
+        }
+      end
+    )
   end
 end

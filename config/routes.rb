@@ -4,6 +4,13 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+
+      resources :games, only: [:index] do
+        collection do
+          post "join"
+        end
+      end
+
       resources :notifications, only: [:index] do
         collection do
           post "mark_as_seen"

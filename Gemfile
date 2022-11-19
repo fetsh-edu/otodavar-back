@@ -19,8 +19,7 @@ gem "rack-cors"
 gem 'devise'
 gem 'devise-jwt'
 gem 'devise_uid'
-# gem 'fast_jsonapi'
-gem 'jsonapi-serializer'
+gem 'panko_serializer'
 gem 'api_error_handler'
 
 

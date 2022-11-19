@@ -128,8 +128,6 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
-    jsonapi-serializer (2.2.0)
-      activesupport (>= 4.2)
     jwt (2.5.0)
     loofah (2.19.0)
       crass (~> 1.0.2)
@@ -153,7 +151,11 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
+    oj (3.13.23)
     orm_adapter (0.5.0)
+    panko_serializer (0.7.7)
+      activesupport
+      oj (> 3.11.0, < 4.0.0)
     public_suffix (5.0.0)
     puma (5.6.5)
       nio4r (~> 2.0)
@@ -259,7 +261,7 @@ DEPENDENCIES
   devise_uid
   importmap-rails
   jbuilder
-  jsonapi-serializer
+  panko_serializer
   puma (~> 5.0)
   rack-cors
   rails (~> 7.0.4)

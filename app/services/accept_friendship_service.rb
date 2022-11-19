@@ -14,7 +14,7 @@ class AcceptFriendshipService < ApplicationService
         user_id: request.user_id,
         payload: payload
       )
-      if notification.present?
+      if notification.persisted?
         NotificationsChannel.broadcast_to(request.user, NotificationSerializer.new(notification).serializable_hash[:data][:attributes])
       end
     end

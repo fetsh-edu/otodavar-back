@@ -16,12 +16,12 @@ class Api::V1::NotificationsController < Api::ApiController
   private
 
   def respond_with(something)
-    resource =  if something.respond_to? :seen
-                  NotificationSerializer.new(something).serializable_hash[:data][:attributes]
-                else
-                  something.map {|s| NotificationSerializer.new(s).serializable_hash[:data][:attributes] }
-                end
-    render json: resource, status: :ok
+    json = if something.respond_to? :seen
+             NotificationSerializer.new.serialize_to_json(something)
+           else
+             Panko::ArraySerializer.new(something, each_serializer: NotificationSerializer).to_json
+           end
+    render json: json, status: :ok
   end
 
 end
