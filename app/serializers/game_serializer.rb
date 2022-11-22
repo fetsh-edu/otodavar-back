@@ -1,9 +1,9 @@
 class GameSerializer < Panko::Serializer
 
-  attributes :uid, :status, :player_1, :player_2
+  attributes :uid, :status
 
-  def player_1 = object.player_1.uid
-
-  def player_2 = object.player_2 ? object.player_2.uid : SKIP
-
+  has_one :player_1, serializer: UserSerializer, scope: {filter: :simple}
+  has_one :player_2, serializer: UserSerializer, scope: {filter: :simple}
+  has_many :last_words,           each_serializer: WordSerializer
+  has_many :words,                each_serializer: WordSerializer
 end

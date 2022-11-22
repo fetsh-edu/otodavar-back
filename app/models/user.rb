@@ -5,7 +5,7 @@ class User < ApplicationRecord
   devise :database_authenticatable,
          :registerable,
          :rememberable,
-         :trackable,
+         # :trackable,
          :uid,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
@@ -64,6 +64,9 @@ class User < ApplicationRecord
            inverse_of: :player_1,
            dependent: :destroy
 
+  def open_games = games.open.includes(:player_2, :player_1, {last_words: :user})
+  def closed_games = games.closed.includes(:player_1, :player_2, {last_words: :user})
+  def random_game = games.where(player_2_id: nil).includes(:player_1, {last_words: :user}).first
 
   def add_friend(user)
     return if id == user.id
@@ -76,19 +79,19 @@ class User < ApplicationRecord
     Friendship.between(user, self).delete_all
   end
 
-  def friend_status_of(user)
-    if id == user.id
-      "me"
-    elsif friends.exists?(user.id)
-      "friend"
-    elsif outgoing_friend_requests.where(friend_id: user.id).exists?
-      "requested"
-    elsif incoming_friend_requests.where(user_id: user.id).exists?
-      "wannabe"
-    else
-      "unknown"
-    end
-  end
+  # def friend_status_of(user)
+  #   if id == user.id
+  #     "me"
+  #   elsif friends.exists?(user.id)
+  #     "friend"
+  #   elsif outgoing_friend_requests.where(friend_id: user.id).exists?
+  #     "requested"
+  #   elsif incoming_friend_requests.where(user_id: user.id).exists?
+  #     "wannabe"
+  #   else
+  #     "unknown"
+  #   end
+  # end
 
   def friends_with?(user)
     return false unless user.respond_to?(:id)

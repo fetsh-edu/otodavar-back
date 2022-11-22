@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_17_140342) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_21_093939) do
   create_table "friendships", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "friend_id", null: false
@@ -58,6 +58,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_17_140342) do
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
+  create_table "words", force: :cascade do |t|
+    t.integer "game_id", null: false
+    t.integer "user_id", null: false
+    t.integer "round_id"
+    t.string "word"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id", "user_id", "round_id"], name: "index_words_on_game_id_and_user_id_and_round_id", unique: true
+    t.index ["game_id"], name: "index_words_on_game_id"
+    t.index ["user_id"], name: "index_words_on_user_id"
+  end
+
   add_foreign_key "friendships", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "words", "games"
+  add_foreign_key "words", "users"
 end

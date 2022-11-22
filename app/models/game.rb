@@ -13,13 +13,18 @@ class Game < ApplicationRecord
   belongs_to :player_1, class_name: 'User'
   belongs_to :player_2, class_name: 'User', optional: true
 
+  has_many :words, dependent: :destroy
+  has_many :last_words,
+           -> () { order(round_id: :desc).limit(3) },
+           class_name: 'Word'
+
   enum :status, open: 0, closed: 1
 
   default_scope { order(created_at: :desc) }
+
   scope :between, -> (a, b) { where(player_1_id: a.id, player_2_id: b.id).or(where(player_1_id: b.id, player_2_id: a.id)) }
   scope :ready, -> { unscoped.open.order(created_at: :asc).where(player_2_id: nil) }
-  scope :ready_for, -> (user) { ready.where.not(player_1_id: user.id) }
-
+  scope :ready_for, -> (user) { ready.where.not(player_1_id: (user.friends.pluck(:id) << user.id)) }
 
   private
 
