@@ -25,7 +25,7 @@ class Api::V1::GamesController < Api::ApiController
   private
 
   def respond_with_game(resource)
-    render json: GameSerializer.new.serialize_to_json(resource),
+    render json: GameSerializer.new(except: [:last_words]).serialize_to_json(resource),
            status: :ok
   end
 

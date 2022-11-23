@@ -13,7 +13,7 @@ class Game < ApplicationRecord
   belongs_to :player_1, class_name: 'User'
   belongs_to :player_2, class_name: 'User', optional: true
 
-  has_many :words, dependent: :destroy
+  has_many :words, -> () { order(round_id: :desc) }, dependent: :destroy
   has_many :last_words,
            -> () { order(round_id: :desc).limit(3) },
            class_name: 'Word'
