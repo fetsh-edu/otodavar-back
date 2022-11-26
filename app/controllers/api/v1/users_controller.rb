@@ -8,14 +8,24 @@ class Api::V1::UsersController < Api::ApiController
     respond_with resource
   end
 
+  def me
+    render json: UserSerializer.new(scope: {filter: :me}, context: {current_user: current_user}).serialize_to_json(current_user),
+           status: :ok
+  end
+
   def friend
+
     user = User.find_by_uid!(params[:id])
-    RequestFriendshipsService.new(from: current_user, to: user).call
+
+    RequestFriendship.call(from: current_user, to: user)
+    # TODO: Handle error ^^^^
+
     resource = if params[:resource].present?
                  User.find_by_uid!(params[:resource])
                else
                  user
                end
+
     respond_with resource.reload
   end
 
@@ -38,7 +48,7 @@ class Api::V1::UsersController < Api::ApiController
 
     if friend_request.present?
 
-      AcceptFriendshipService.call(friend_request)
+      AcceptFriendship.call(request: friend_request)
 
       resource = if params[:resource].present?
                    User.find_by_uid!(params[:resource])

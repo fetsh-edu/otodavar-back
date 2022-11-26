@@ -1,6 +1,10 @@
 require 'jwt'
 require 'net/http'
-class JwtVerifier < ApplicationService
+class JwtVerifier
+
+  def self.call(jwt)
+    new(jwt).call
+  end
 
   def initialize(jwt)
     @jwt = jwt

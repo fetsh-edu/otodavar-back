@@ -10,6 +10,8 @@ class Game < ApplicationRecord
 
   before_save :generate_uid
 
+  validate :cant_play_with_myself
+
   belongs_to :player_1, class_name: 'User'
   belongs_to :player_2, class_name: 'User', optional: true
 
@@ -27,6 +29,12 @@ class Game < ApplicationRecord
   scope :ready_for, -> (user) { ready.where.not(player_1_id: (user.friends.pluck(:id) << user.id)) }
 
   private
+
+  def cant_play_with_myself
+    if player_1_id == player_2_id
+      errors.add(:base, :invalid, message: "You shouldn't play with yourself")
+    end
+  end
 
   def generate_uid
     self.uid = self.class.uid if self.uid.nil?

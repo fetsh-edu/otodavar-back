@@ -9,23 +9,27 @@ class Api::V1::GamesController < Api::ApiController
   end
 
   def index
-    render json: HomeSerializer.new.serialize_to_json(current_user),
+    render json: HomeSerializer.new(context: {current_user: current_user}).serialize_to_json(current_user),
            status: :ok
   end
 
   def join
-    result = PrepareGame.call(params.merge(current_user: current_user))
+    result = if params[:user_uid].present?
+                PlayFriend.call(params.merge(current_user: current_user))
+             else
+                PlayRandom.call(params.merge(current_user: current_user))
+             end
     if result.success? && result.game.present?
       respond_with_game result.game
     else
-      render json: result.message, status: :expectation_failed
+      render json: result.errors, status: :expectation_failed
     end
   end
 
   private
 
   def respond_with_game(resource)
-    render json: GameSerializer.new(except: [:last_words]).serialize_to_json(resource),
+    render json: GameSerializer.new(except: [:last_words], context: {current_user: current_user}).serialize_to_json(resource),
            status: :ok
   end
 

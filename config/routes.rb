@@ -11,12 +11,18 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :words, only: [:create] do
+      end
+
       resources :notifications, only: [:index] do
         collection do
           post "mark_as_seen"
         end
       end
       resources :users, only: [:show] do
+        collection do
+          get "me"
+        end
         member do
           post "friend"
           post "unfriend"

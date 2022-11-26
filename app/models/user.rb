@@ -69,8 +69,6 @@ class User < ApplicationRecord
   def random_game = games.where(player_2_id: nil).includes(:player_1, {last_words: :user}).first
 
   def add_friend(user)
-    return if id == user.id
-    return if friends_with?(user)
     outgoing_friend_requests.create(friend: user)
   end
 
@@ -79,19 +77,19 @@ class User < ApplicationRecord
     Friendship.between(user, self).delete_all
   end
 
-  # def friend_status_of(user)
-  #   if id == user.id
-  #     "me"
-  #   elsif friends.exists?(user.id)
-  #     "friend"
-  #   elsif outgoing_friend_requests.where(friend_id: user.id).exists?
-  #     "requested"
-  #   elsif incoming_friend_requests.where(user_id: user.id).exists?
-  #     "wannabe"
-  #   else
-  #     "unknown"
-  #   end
-  # end
+  def friend_status_of(user)
+    if id == user.id
+      "me"
+    elsif friends.exists?(user.id)
+      "friend"
+    elsif outgoing_friend_requests.where(friend_id: user.id).exists?
+      "requested"
+    elsif incoming_friend_requests.where(user_id: user.id).exists?
+      "wannabe"
+    else
+      "unknown"
+    end
+  end
 
   def friends_with?(user)
     return false unless user.respond_to?(:id)
