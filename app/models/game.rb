@@ -28,6 +28,16 @@ class Game < ApplicationRecord
   scope :ready, -> { unscoped.open.order(created_at: :asc).where(player_2_id: nil) }
   scope :ready_for, -> (user) { ready.where.not(player_1_id: (user.friends.pluck(:id) << user.id)) }
 
+  def finish
+    guess = words.order(round_id: :desc).limit(2)
+    Rails.logger.info guess.inspect
+    return unless guess.count == 2
+    return if guess.map(&:round_id).uniq.size != 1
+    return if guess.map(&:word).uniq.size != 1
+
+      closed!
+  end
+
   private
 
   def cant_play_with_myself

@@ -64,9 +64,9 @@ class User < ApplicationRecord
            inverse_of: :player_1,
            dependent: :destroy
 
-  def open_games = games.open.includes(:player_2, :player_1, {last_words: :user})
-  def closed_games = games.closed.includes(:player_1, :player_2, {last_words: :user})
-  def random_game = games.where(player_2_id: nil).includes(:player_1, {last_words: :user}).first
+  def open_games = games.open.includes(:player_2, :player_1)
+  def closed_games = games.closed.includes(:player_1, :player_2).limit(50)
+  def random_game = games.where(player_2_id: nil).includes(:player_1).first
 
   def add_friend(user)
     outgoing_friend_requests.create(friend: user)

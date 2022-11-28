@@ -6,8 +6,18 @@ class Word < ApplicationRecord
   validates :word, :round_id, presence: true
   validate :user_should_be_of_game, :should_be_new_or_an_answer
 
+  before_save :normalize_word
+  after_save :finish_game
+
   private
 
+  def normalize_word
+    self.word = self.word.upcase.strip
+  end
+  def finish_game
+    game.finish
+    true
+  end
   def should_be_new_or_an_answer
     return if round_id.zero?
     return if Word.where(game_id: game_id, round_id: round_id - 1, user_id: partner_id).any?

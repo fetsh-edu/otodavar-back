@@ -1,5 +1,5 @@
 class WordSerializer < Panko::Serializer
-  attributes :word, :round_id, :player
+  attributes :word, :round_id, :player, :id
 
   def player
     object.user.uid

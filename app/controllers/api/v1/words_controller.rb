@@ -7,8 +7,11 @@ class Api::V1::WordsController < Api::ApiController
     @game = Game.find_by_uid(params[:game_uid])
     @word = @game.words.create(word_params.merge({user_id: current_user.id}))
     if @word.persisted?
+      GameChannel.broadcast_to(@game, WordSerializer.new.serialize(@word))
       respond_with_game(@game.reload)
-    #  TODO: else handle errors
+    else
+      #  TODO: else handle errors
+      render json: @game.errors, status: :expectation_failed
     end
   end
 

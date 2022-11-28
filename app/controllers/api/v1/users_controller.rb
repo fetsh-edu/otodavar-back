@@ -4,7 +4,7 @@ class Api::V1::UsersController < Api::ApiController
   respond_to :json
 
   def show
-    resource = User.find_by_uid(params[:id])
+    resource = User.find_by_uid!(params[:id])
     respond_with resource
   end
 

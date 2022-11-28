@@ -4,7 +4,7 @@ class Api::V1::GamesController < Api::ApiController
   respond_to :json
 
   def show
-    resource = Game.find_by_uid(params[:id])
+    resource = Game.find_by_uid!(params[:id])
     respond_with_game(resource)
   end
 
