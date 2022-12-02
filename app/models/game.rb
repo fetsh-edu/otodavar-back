@@ -35,7 +35,11 @@ class Game < ApplicationRecord
     return if guess.map(&:round_id).uniq.size != 1
     return if guess.map(&:word).uniq.size != 1
 
-      closed!
+    closed!
+  end
+
+  def opponent(player_id)
+    player_id == player_1_id ? player_2 : player_1
   end
 
   private

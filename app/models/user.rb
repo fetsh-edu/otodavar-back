@@ -104,7 +104,7 @@ class User < ApplicationRecord
 
     subs.each do |sub|
       Webpush.payload_send(
-        message: message,
+        message: JSON.generate(message),
         endpoint: sub.endpoint,
         p256dh: sub.p256dh_key,
         auth: sub.auth_key,

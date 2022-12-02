@@ -8,6 +8,19 @@ class Api::V1::WordsController < Api::ApiController
     @word = @game.words.create(word_params.merge({user_id: current_user.id}))
     if @word.persisted?
       GameChannel.broadcast_to(@game, WordSerializer.new.serialize(@word))
+
+      if @game.closed?
+        message = { body: "#{current_user.name} matched your word!",
+          url: "/g/#{@game.uid}"
+        }
+        @game.opponent(current_user.id).push_notification(message)
+      else
+        message = { body: "#{current_user.name} has a word for you to match!",
+          url: "/g/#{@game.uid}"
+        }
+        @game.opponent(current_user.id).push_notification(message)
+      end
+
       respond_with_game(@game.reload)
     else
       #  TODO: else handle errors
