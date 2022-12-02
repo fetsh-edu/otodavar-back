@@ -13,6 +13,36 @@ class Api::V1::UsersController < Api::ApiController
            status: :ok
   end
 
+  def delete_push
+    subscription_params = JSON.parse(params[:subscription] || "null" )
+    if subscription_params.present?
+      current_user.push_subscriptions.where(
+        endpoint: subscription_params["endpoint"],
+        auth_key: subscription_params['keys']['auth'],
+        p256dh_key: subscription_params['keys']['p256dh'],
+        ).destroy_all
+    end
+    render json: "ok".to_json, status: :ok
+  end
+
+  def push
+    subscription_params = JSON.parse(params[:subscription] || "null" )
+    if subscription_params.present?
+      subscription = current_user.push_subscriptions.find_or_initialize_by(
+        endpoint: subscription_params["endpoint"],
+        auth_key: subscription_params['keys']['auth'],
+        p256dh_key: subscription_params['keys']['p256dh'],
+      )
+      if subscription.save
+        render json: "ok".to_json, status: :ok
+      else
+        render json: "not_ok".to_json, status: :unprocessable_entity
+      end
+    else
+      render json: "ok".to_json, status: :ok
+    end
+  end
+
   def friend
 
     user = User.find_by_uid!(params[:id])

@@ -64,6 +64,8 @@ class User < ApplicationRecord
            inverse_of: :player_1,
            dependent: :destroy
 
+  has_many :push_subscriptions, dependent: :destroy
+
   def open_games = games.open.includes(:player_2, :player_1)
   def closed_games = games.closed.includes(:player_1, :player_2).limit(50)
   def random_game = games.where(player_2_id: nil).includes(:player_1).first
@@ -94,5 +96,28 @@ class User < ApplicationRecord
   def friends_with?(user)
     return false unless user.respond_to?(:id)
     friends.exists?(user.id)
+  end
+
+  def push_notification(message = 'Message from oto | davar')
+    subs = self.push_subscriptions.reload
+    return if subs.empty?
+
+    subs.each do |sub|
+      Webpush.payload_send(
+        message: message,
+        endpoint: sub.endpoint,
+        p256dh: sub.p256dh_key,
+        auth: sub.auth_key,
+        vapid: {
+          public_key: Rails.application.credentials.dig(:vapid, :public_key),
+          private_key: Rails.application.credentials.dig(:vapid, :private_key)
+        },
+        ssl_timeout: 5,
+        open_timeout: 5,
+        read_timeout: 5
+      )
+    rescue Webpush::ExpiredSubscription => e_
+      sub.destroy
+    end
   end
 end

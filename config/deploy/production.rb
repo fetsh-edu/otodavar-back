@@ -9,6 +9,13 @@ server "fetsh.me", user: "eliyahu", roles: %w{app db web}
 
 append :linked_files, "config/master.key"
 
+
+task :env do
+  on roles(:all) do
+    execute "env"
+  end
+end
+
 namespace :deploy do
   namespace :check do
     before :linked_files, :set_master_key do

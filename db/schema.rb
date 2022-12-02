@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_21_093939) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_02_085410) do
   create_table "friendships", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "friend_id", null: false
@@ -36,6 +36,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_21_093939) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "push_subscriptions", force: :cascade do |t|
+    t.string "endpoint"
+    t.string "auth_key"
+    t.string "p256dh_key"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_push_subscriptions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

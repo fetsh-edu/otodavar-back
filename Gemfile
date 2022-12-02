@@ -21,6 +21,7 @@ gem 'devise_uid'
 gem 'panko_serializer'
 gem 'interactor', '~> 3.0'
 gem 'api_error_handler'
+gem 'webpush'
 
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
@@ -81,7 +82,6 @@ group :development do
 end
 
 group :test do
-  gem "sqlite3", "~> 1.4"
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
