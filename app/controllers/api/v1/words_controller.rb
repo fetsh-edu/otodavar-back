@@ -18,7 +18,9 @@ class Api::V1::WordsController < Api::ApiController
         message = { body: "#{current_user.name} has a word for you to match!",
           url: "/g/#{@game.uid}"
         }
-        @game.opponent(current_user.id).push_notification(message)
+        if (opponent = @game.opponent(current_user.id))
+          opponent.push_notification(message)
+        end
       end
 
       respond_with_game(@game.reload)

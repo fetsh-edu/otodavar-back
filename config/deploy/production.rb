@@ -7,8 +7,8 @@ server "fetsh.me", user: "eliyahu", roles: %w{app db web}
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
 
-append :linked_files, "config/master.key"
-
+append :linked_files, "config/database.yml", 'config/master.key'
+append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets"
 
 task :env do
   on roles(:all) do
@@ -22,6 +22,13 @@ namespace :deploy do
       on roles(:app), in: :sequence, wait: 10 do
         unless test("[ -f #{shared_path}/config/master.key ]")
           upload! 'config/master.key', "#{shared_path}/config/master.key"
+        end
+      end
+    end
+    before :linked_files, :set_database do
+      on roles(:app), in: :sequence, wait: 10 do
+        unless test("[ -f #{shared_path}/config/database.yml ]")
+          upload! 'config/database.yml', "#{shared_path}/config/database.yml"
         end
       end
     end
