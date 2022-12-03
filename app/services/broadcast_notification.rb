@@ -9,8 +9,8 @@ class BroadcastNotification
       NotificationSerializer.new.serialize(context.notification)
     )
 
-    # if (message = context.notification.to_message)
-    #   context.notification_recepient.push_notification(message)
-    # end
+    if (message = context.notification.to_message)
+      context.notification_recepient.push_notification(message)
+    end
   end
 end
