@@ -7,7 +7,8 @@ set :repo_url, "git@github.com:fetsh-edu/otodavar-back.git"
 set :asdf_tools, %w{ ruby }
 
 # Default branch is :master
-ask :branch, :main
+# ask :branch, :main
+set :branch, :main
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name

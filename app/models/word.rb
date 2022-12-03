@@ -1,5 +1,5 @@
 class Word < ApplicationRecord
-  belongs_to :game
+  belongs_to :game, touch: true
   belongs_to :user
 
   validates :round_id, uniqueness: { scope: [:game_id, :user_id] }
