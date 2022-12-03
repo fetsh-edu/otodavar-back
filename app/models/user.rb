@@ -66,8 +66,8 @@ class User < ApplicationRecord
 
   has_many :push_subscriptions, dependent: :destroy
 
-  def open_games = games.order(updated_at: :desc).open.includes(:player_2, :player_1)
-  def closed_games = games.order(updated_at: :desc).closed.includes(:player_1, :player_2).limit(20)
+  def open_games = games.unscope(:order).order(updated_at: :desc).open.includes(:player_2, :player_1)
+  def closed_games = games.unscope(:order).order(updated_at: :desc).closed.includes(:player_1, :player_2).limit(20)
   def random_game = games.where(player_2_id: nil).includes(:player_1).first
 
   def add_friend(user)
