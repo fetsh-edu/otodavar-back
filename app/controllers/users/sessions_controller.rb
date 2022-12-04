@@ -10,7 +10,7 @@ class Users::SessionsController < Devise::SessionsController
     jwt = JwtVerifier.call(params[:jwt])
     user = User.find_or_initialize_by(email: jwt[0]["email"])
     user.avatar = jwt[0]["picture"]
-    user.name = jwt[0]["name"]
+    user.name = user.name || jwt[0]["name"]
     user.save
     self.resource = user
     sign_in(resource_name, resource)

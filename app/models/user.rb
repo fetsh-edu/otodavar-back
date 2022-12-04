@@ -9,6 +9,8 @@ class User < ApplicationRecord
          :uid,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  validates :name, presence: true, length: { in: 2..100 }
+
   has_many :notifications
 
   has_many :friendships,

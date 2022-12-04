@@ -8,6 +8,15 @@ class Api::V1::UsersController < Api::ApiController
     respond_with resource
   end
 
+  def update
+    # TODO: HANDLE Errors
+    if params[:name].present?
+      current_user.update(name: params[:name])
+    end
+    render json: UserSerializer.new(scope: { filter: :simple }, context: {current_user: current_user}).serialize_to_json(current_user.reload),
+           status: :ok
+  end
+
   def me
     render json: UserSerializer.new(scope: {filter: :me}, context: {current_user: current_user}).serialize_to_json(current_user),
            status: :ok

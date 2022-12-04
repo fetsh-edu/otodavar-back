@@ -23,6 +23,7 @@ Rails.application.routes.draw do
         collection do
           get "me"
           post "push"
+          post "update"
           delete "push", to: "users#delete_push"
         end
         member do
