@@ -1,10 +1,11 @@
 class UserSerializer < Panko::Serializer
 
   attributes :uid, :email, :avatar, :name, :friend_status,
-             :games_count, :friends_count
+             :games_count, :friends_count, :telegram_id
 
   FILTERS = {
     simple:       { only: [ :email, :avatar, :name, :uid, :friend_status ] },
+    simple_me:       { only: [ :email, :avatar, :name, :uid, :friend_status, :telegram_id ] },
     me:           { only: [ :email, :avatar, :name, :uid, :friend_status, :friends, :incoming_friends, :outgoing_friends ] },
     full:         {},
     friend:       { only: [ :email, :avatar, :name, :uid, :friend_status, :games_count, :friends_count, :friends ] },

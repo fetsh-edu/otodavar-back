@@ -13,7 +13,10 @@ class Api::V1::UsersController < Api::ApiController
     if params[:name].present?
       current_user.update(name: params[:name])
     end
-    render json: UserSerializer.new(scope: { filter: :simple }, context: {current_user: current_user}).serialize_to_json(current_user.reload),
+    if params[:telegram_id].present?
+      current_user.update(telegram_id: params[:telegram_id])
+    end
+    render json: UserSerializer.new(scope: { filter: :simple_me }, context: {current_user: current_user}).serialize_to_json(current_user.reload),
            status: :ok
   end
 

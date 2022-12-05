@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_02_085410) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_05_150040) do
   create_table "friendships", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "friend_id", null: false
@@ -63,6 +63,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_085410) do
     t.string "uid", null: false
     t.string "avatar"
     t.string "name"
+    t.integer "telegram_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
