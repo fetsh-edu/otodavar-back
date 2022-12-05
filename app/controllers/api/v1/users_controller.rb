@@ -21,7 +21,7 @@ class Api::V1::UsersController < Api::ApiController
   end
 
   def me
-    render json: UserSerializer.new(scope: {filter: :me}, context: {current_user: current_user}).serialize_to_json(current_user),
+    render json: UserSerializer.new(scope: {filter: :simple_me}, context: {current_user: current_user}).serialize_to_json(current_user),
            status: :ok
   end
 
