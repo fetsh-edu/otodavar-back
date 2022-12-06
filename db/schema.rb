@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_05_150040) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_06_141602) do
   create_table "friendships", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "friend_id", null: false
@@ -76,6 +76,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_150040) do
     t.string "word"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "stamp", default: 0, null: false
     t.index ["game_id", "user_id", "round_id"], name: "index_words_on_game_id_and_user_id_and_round_id", unique: true
     t.index ["game_id"], name: "index_words_on_game_id"
     t.index ["user_id"], name: "index_words_on_user_id"

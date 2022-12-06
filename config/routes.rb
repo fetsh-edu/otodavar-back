@@ -12,6 +12,9 @@ Rails.application.routes.draw do
       end
 
       resources :words, only: [:create] do
+        member do
+          post "stamp"
+        end
       end
 
       resources :notifications, only: [:index] do

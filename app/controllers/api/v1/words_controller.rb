@@ -8,10 +8,20 @@ class Api::V1::WordsController < Api::ApiController
     @word = @game.words.create(word_params.merge({user_id: current_user.id}))
     if @word.persisted?
       BroadcastWordNotification.call(word: @word)
-    else
-      # render json: @game.errors, status: :expectation_failed
     end
     respond_with_game(@game.reload)
+  end
+
+  def stamp
+    @word = Word.find(params[:id])
+    if Word.stamps.keys.include?(params[:stamp]) && @word.game.of_player?(current_user.id)
+      @word.stamp = params[:stamp]
+      if @word.save
+        GameChannel.broadcast_to(@word.game, WordSerializer.new.serialize(@word))
+      end
+    end
+    # TODO:
+    render json: nil.to_json, status: :ok
   end
 
   def respond_with_game(resource)

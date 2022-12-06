@@ -2,6 +2,18 @@ class Word < ApplicationRecord
   belongs_to :game, touch: true
   belongs_to :user
 
+  enum :stamp,
+       nothing: 0,
+       lol: 1,
+       omg: 2,
+       wtf: 3,
+       almost: 4,
+       aaaaa: 5,
+       monkey: 6,
+       love: 7,
+       party: 8
+
+
   validates :round_id, uniqueness: { scope: [:game_id, :user_id] }
   validates :word, :round_id, presence: true
   validate :user_should_be_of_game, :should_be_new_or_an_answer
