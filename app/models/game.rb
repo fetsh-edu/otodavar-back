@@ -42,6 +42,10 @@ class Game < ApplicationRecord
     player_id == player_1_id ? player_2 : player_1
   end
 
+  def link
+    "https://otodavar.fetsh.me/g/#{uid}"
+  end
+
   private
 
   def cant_play_with_myself

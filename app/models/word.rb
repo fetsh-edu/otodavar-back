@@ -9,6 +9,12 @@ class Word < ApplicationRecord
   before_save :normalize_word
   after_save :finish_game
 
+
+  def opposite
+    Word.where(game_id: game_id, round_id: round_id).where.not(id: id).first
+  end
+
+
   private
 
   def normalize_word

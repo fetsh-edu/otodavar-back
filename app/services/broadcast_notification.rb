@@ -8,9 +8,11 @@ class BroadcastNotification
       context.notification_recepient,
       NotificationSerializer.new.serialize(context.notification)
     )
-
     if (message = context.notification.to_message)
-      context.notification_recepient.push_notification(message)
+      BroadcastBrowserNotificationJob.perform_later(context.notification_recepient, message)
+    end
+    if (message = context.notification.to_telegram)
+      BroadcastTelegramNotificationJob.perform_later(context.notification_recepient.telegram_id, message)
     end
   end
 end

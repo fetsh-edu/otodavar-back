@@ -22,6 +22,7 @@ gem 'panko_serializer'
 gem 'interactor', '~> 3.0'
 gem 'api_error_handler'
 gem 'webpush'
+gem 'telegram-bot-ruby'
 
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
