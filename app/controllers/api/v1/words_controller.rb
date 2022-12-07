@@ -14,6 +14,7 @@ class Api::V1::WordsController < Api::ApiController
 
   def stamp
     @word = Word.find(params[:id])
+    # TODO: Prevent stamping your own words :)
     if Word.stamps.keys.include?(params[:stamp]) && @word.game.of_player?(current_user.id)
       @word.stamp = params[:stamp]
       if @word.save
