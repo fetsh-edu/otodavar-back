@@ -11,7 +11,7 @@ class BroadcastNotification
     if (message = context.notification.to_message)
       BroadcastBrowserNotificationJob.perform_later(context.notification_recepient, message)
     end
-    if (message = context.notification.to_telegram)
+    if (message = TelegramMessageBuilder.from_notification(context.notification))
       BroadcastTelegramNotificationJob.perform_later(context.notification_recepient.telegram_id, message)
     end
   end

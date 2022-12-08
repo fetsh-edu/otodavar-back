@@ -7,11 +7,8 @@ class BroadcastWordNotification
     return if context.word.blank?
 
     @word = context.word
-    @game = @word.game
-    @player = @word.user
 
-    GameChannel.broadcast_to(@game, WordSerializer.new.serialize(@word))
-
+    GameChannel.broadcast_to(@word.game, WordSerializer.new.serialize(@word))
     BroadcastWordJob.perform_later(@word)
   end
 end

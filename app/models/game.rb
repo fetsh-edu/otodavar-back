@@ -50,6 +50,11 @@ class Game < ApplicationRecord
     "https://otodavar.fetsh.me/g/#{uid}"
   end
 
+  def to_message
+    words_ = words.group_by(&:round_id).map{|k, v| "#{k}: #{v.map(&:word).join(" -- ")}"  }.join("\n")
+    "GAME: #{player_1.name} vs #{player_2.name}\n\n#{words_}"
+  end
+
   private
 
   def cant_play_with_myself

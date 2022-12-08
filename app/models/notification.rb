@@ -41,23 +41,4 @@ class Notification < ApplicationRecord
     end
   end
 
-  def to_telegram
-    if payload["action"] == ACTIONS[:friend_request]
-      "[#{escape(payload['name'])}](https://otodavar.fetsh.me/u/#{payload['uid']}) wants to be your friend\\!"
-    elsif payload["action"] == ACTIONS[:friend_accept]
-      "[#{escape(payload['name'])}](https://otodavar.fetsh.me/u/#{payload['uid']})  accepted your friend request\\!"
-    elsif payload["action"] == ACTIONS[:game_created]
-      "#{escape(payload['name'])} started a [game](https://otodavar.fetsh.me/g/#{payload['uid']}) with you\\!"
-    elsif payload["action"] == ACTIONS[:random_game_accepted]
-      "#{escape(payload['name'])} joined your [random game](https://otodavar.fetsh.me/g/#{payload['uid']})\\!"
-    else
-      nil
-    end
-  end
-
-  private
-  def escape(word)
-    word.gsub(/([_*\[\]()~`>#+\-=|{}.!])/, '\\\\\1')
-  end
-
 end
