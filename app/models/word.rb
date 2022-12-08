@@ -11,7 +11,8 @@ class Word < ApplicationRecord
        aaaaa: 5,
        monkey: 6,
        love: 7,
-       party: 8
+       party: 8,
+       buthow: 9
 
 
   validates :round_id, uniqueness: { scope: [:game_id, :user_id] }
