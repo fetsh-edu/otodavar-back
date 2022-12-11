@@ -13,8 +13,9 @@ class Api::V1::UsersController < Api::ApiController
     if params[:name].present?
       current_user.update(name: params[:name])
     end
-    if params.key?(:telegram_id)
-      current_user.update(telegram_id: params[:telegram_id])
+    if params.key?(:telegram) && telegram_valid?(params[:telegram])
+      Rails.logger.info(params[:telegram])
+      current_user.update(telegram_id: params[:telegram][:id])
     end
     render json: UserSerializer.new(scope: { filter: :simple_me }, context: {current_user: current_user}).serialize_to_json(current_user.reload),
            status: :ok
@@ -105,6 +106,13 @@ class Api::V1::UsersController < Api::ApiController
   end
 
   private
+
+  def telegram_valid?(auth_data)
+    auth_data[:hash] == OpenSSL::HMAC.hexdigest(
+      OpenSSL::Digest.new('sha256'),
+      Digest::SHA256.digest(Rails.application.credentials[:telegram]),
+      auth_data.except(:hash).map { |k,v| "#{k}=#{v}" }.sort.join("\n"))
+  end
 
   def respond_with(resource, _opts = {})
     json = UserSerializer.new(

@@ -2,7 +2,7 @@ require "telegram/bot"
 class BroadcastTelegramNotificationJob < ApplicationJob
   queue_as :default
 
-  def perform(telegram_id, message)
+  def perform(user_id, telegram_id, message)
     return if message.blank?
     return if telegram_id.blank?
 
@@ -15,6 +15,9 @@ class BroadcastTelegramNotificationJob < ApplicationJob
         parse_mode: "MarkdownV2",
         disable_web_page_preview: true
       }.merge(message))
+    rescue Telegram::Bot::Exceptions::ResponseError => e
+      if e.error_code == 403
+        User.find(user_id).update(telegram_id: nil)
+      end
   end
-
 end
