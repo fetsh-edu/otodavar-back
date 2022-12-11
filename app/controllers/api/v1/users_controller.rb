@@ -114,7 +114,7 @@ class Api::V1::UsersController < Api::ApiController
     auth_data[:hash] == OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('sha256'),
       Digest::SHA256.digest(Rails.application.credentials[:telegram]),
-      auth_data.except(:hash).to_hash.map { |k,v| "#{k}=#{v}" }.sort.join("\n"))
+      auth_data.except(:hash).permit(:id, :first_name, :last_name, :username, :photo_url, :auth_date).to_hash.map { |k,v| "#{k}=#{v}" }.sort.join("\n"))
   end
 
   def respond_with(resource, _opts = {})
