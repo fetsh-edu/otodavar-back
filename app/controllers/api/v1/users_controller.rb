@@ -13,9 +13,12 @@ class Api::V1::UsersController < Api::ApiController
     if params[:name].present?
       current_user.update(name: params[:name])
     end
-    if params.key?(:telegram) && telegram_valid?(params[:telegram])
-      Rails.logger.info(params[:telegram])
-      current_user.update(telegram_id: params[:telegram][:id])
+    if params.key?(:telegram)
+      if params[:telegram].nil?
+        current_user.update(telegram_id: nil)
+      elsif telegram_valid?(params[:telegram])
+        current_user.update(telegram_id: params[:telegram][:id])
+      end
     end
     render json: UserSerializer.new(scope: { filter: :simple_me }, context: {current_user: current_user}).serialize_to_json(current_user.reload),
            status: :ok
