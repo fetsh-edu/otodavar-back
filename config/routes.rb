@@ -9,6 +9,9 @@ Rails.application.routes.draw do
         collection do
           post "join"
         end
+        member do
+          post 'archive'
+        end
       end
 
       resources :words, only: [:create] do

@@ -66,10 +66,24 @@ class User < ApplicationRecord
            inverse_of: :player_1,
            dependent: :destroy
 
+  has_many :seen_games,
+           -> (user) {
+             Game.all.unscope(where: :user_id).where(player_1_id: user.id, seen_by_1: true).or(Game.all.where(player_2_id: user.id, seen_by_2: true))
+           },
+           class_name: "Game",
+           inverse_of: :player_1
+
+  has_many :not_seen_games,
+           -> (user) {
+             Game.all.unscope(where: :user_id).where(player_1_id: user.id, seen_by_1: false).or(Game.all.where(player_2_id: user.id, seen_by_2: false))
+           },
+           class_name: "Game",
+           inverse_of: :player_1
+
   has_many :push_subscriptions, dependent: :destroy
 
-  def open_games = games.unscope(:order).order(updated_at: :desc).open.includes(:player_2, :player_1)
-  def closed_games = games.unscope(:order).order(updated_at: :desc).closed.includes(:player_1, :player_2).limit(20)
+  def open_games = games.unscope(:order).order(updated_at: :desc).open.or(not_seen_games.unscope(:order).closed).includes(:player_2, :player_1)
+  def closed_games = seen_games.unscope(:order).order(updated_at: :desc).closed.includes(:player_1, :player_2).limit(20)
   def random_game = games.where(player_2_id: nil).includes(:player_1).first
 
   def add_friend(user)

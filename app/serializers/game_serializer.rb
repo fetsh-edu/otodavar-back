@@ -1,6 +1,6 @@
 class GameSerializer < Panko::Serializer
 
-  attributes :uid, :status#, :last_words
+  attributes :uid, :status, :seen_by_1, :seen_by_2
 
   has_one :player_1, serializer: UserSerializer, scope: {filter: :simple}
   has_one :player_2, serializer: UserSerializer, scope: {filter: :simple}

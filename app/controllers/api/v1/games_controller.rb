@@ -13,6 +13,18 @@ class Api::V1::GamesController < Api::ApiController
            status: :ok
   end
 
+  def archive
+    resource = Game.find_by_uid!(params[:id])
+
+    if resource.player_1_id == current_user.id
+      resource.update(seen_by_1: true)
+    elsif resource.player_2_id == current_user.id
+      resource.update(seen_by_2: true)
+    end
+
+    respond_with_game(resource)
+  end
+
   def join
     result = if params[:user_uid].present?
                 PlayFriend.call(params.merge(current_user: current_user))

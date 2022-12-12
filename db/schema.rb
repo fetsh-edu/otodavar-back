@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_06_141602) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_12_122423) do
   create_table "friendships", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "friend_id", null: false
@@ -27,6 +27,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_06_141602) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "seen_by_1", default: false, null: false
+    t.boolean "seen_by_2", default: false, null: false
   end
 
   create_table "notifications", force: :cascade do |t|
