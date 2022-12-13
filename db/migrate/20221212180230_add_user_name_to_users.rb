@@ -1,4 +1,6 @@
 class AddUserNameToUsers < ActiveRecord::Migration[7.0]
+  class User < ApplicationRecord
+  end
   def up
     add_column :users, :user_name, :string
     User.all.each do |user|
