@@ -21,21 +21,21 @@ class TelegramMessageBuilder
 
     if payload["action"] == Notification::ACTIONS[:friend_request]
       {
-        text: "👥 [#{escape(payload['name'])}](https://otodavar.fetsh.me/u/#{payload['uid']}) wants to be your friend"
+        text: "👥 [#{escape(payload['name'])}](https://otodavar.me/u/#{payload['uid']}) wants to be your friend"
       }
     elsif payload["action"] == Notification::ACTIONS[:friend_accept]
       {
-        text: "👥 [#{escape(payload['name'])}](https://otodavar.fetsh.me/u/#{payload['uid']}) accepted your friend request"
+        text: "👥 [#{escape(payload['name'])}](https://otodavar.me/u/#{payload['uid']}) accepted your friend request"
       }
     elsif payload["action"] == Notification::ACTIONS[:game_created]
       {
         text: "🎮 *#{escape(payload['name'])}* started a game with you, say your first word",
-        reply_markup: one_button("Play", "https://otodavar.fetsh.me/g/#{payload['uid']}")
+        reply_markup: one_button("Play", "https://otodavar.me/g/#{payload['uid']}")
       }
     elsif payload["action"] == Notification::ACTIONS[:random_game_accepted]
       {
         text: "🎮 *#{escape(payload['name'])}* joined your random game",
-        reply_markup: one_button("Play", "https://otodavar.fetsh.me/g/#{payload['uid']}")
+        reply_markup: one_button("Play", "https://otodavar.me/g/#{payload['uid']}")
       }
     else
       nil

@@ -47,7 +47,7 @@ class Game < ApplicationRecord
   end
 
   def link
-    "https://otodavar.fetsh.me/g/#{uid}"
+    "https://otodavar.me/g/#{uid}"
   end
 
   def to_message
