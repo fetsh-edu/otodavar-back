@@ -4,14 +4,25 @@ class Api::V1::UsersController < Api::ApiController
   respond_to :json
 
   def show
-    resource = User.find_by_uid!(params[:id])
+    resource = User.find_by_uid_or_user_name!(params[:id])
     respond_with resource
+  end
+
+  def name_valid
+    current_user.user_name = params.permit(:user_name)[:user_name]
+    if current_user.valid?
+      render json: { valid: true }.to_json,
+             status: :ok
+    else
+      render json: { valid: false, errors: current_user.errors ? current_user.errors.messages[:user_name] : [] }.to_json,
+             status: :ok
+    end
   end
 
   def update
     # TODO: HANDLE Errors
     if params[:name].present?
-      current_user.update(name: params[:name])
+      current_user.update(params.permit(:name, :user_name))
     end
     if params.key?(:telegram)
       if params[:telegram].nil?
@@ -61,13 +72,13 @@ class Api::V1::UsersController < Api::ApiController
 
   def friend
 
-    user = User.find_by_uid!(params[:id])
+    user = User.find_by_uid_or_user_name!(params[:id])
 
     RequestFriendship.call(from: current_user, to: user)
     # TODO: Handle error ^^^^
 
     resource = if params[:resource].present?
-                 User.find_by_uid!(params[:resource])
+                 User.find_by_uid_or_user_name!(params[:resource])
                else
                  user
                end
@@ -76,10 +87,10 @@ class Api::V1::UsersController < Api::ApiController
   end
 
   def unfriend
-    user = User.find_by_uid!(params[:id])
+    user = User.find_by_uid_or_user_name!(params[:id])
     current_user.remove_friend(user)
     resource = if params[:resource].present?
-                 User.find_by_uid!(params[:resource])
+                 User.find_by_uid_or_user_name!(params[:resource])
                else
                  user
                end
@@ -88,7 +99,7 @@ class Api::V1::UsersController < Api::ApiController
 
   def accept
 
-    user = User.find_by_uid!(params[:id])
+    user = User.find_by_uid_or_user_name!(params[:id])
 
     friend_request = user.outgoing_friend_requests.where(friend_id: current_user.id).first
 
@@ -97,7 +108,7 @@ class Api::V1::UsersController < Api::ApiController
       AcceptFriendship.call(request: friend_request)
 
       resource = if params[:resource].present?
-                   User.find_by_uid!(params[:resource])
+                   User.find_by_uid_or_user_name!(params[:resource])
                  else
                    user
                  end

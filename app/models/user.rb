@@ -6,10 +6,34 @@ class User < ApplicationRecord
          :registerable,
          :rememberable,
          # :trackable,
-         :uid,
+         # :uid,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  def self.uid
+    loop do
+      token = Devise.friendly_token
+      break token unless self.to_adapter.find_first({ :uid => token })
+    end
+  end
+
+  before_validation do
+    self.uid = self.class.uid if self.uid.nil?
+  end
+  before_validation(on: :create) do
+    self.user_name = self.uid if self.user_name.nil?
+  end
+  before_save do
+    self.user_name_changed_at = Time.now unless self.user_name == self.uid
+  end
+
   validates :name, presence: true, length: { in: 2..100 }
+  validates :user_name,
+            uniqueness: { case_sensitive: false },
+            presence: true,
+            length: { in: 2..20 },
+            format: { :with => /\A[a-zA-Z0-9_-]+\z/, message: "only letters, numbers, '-' and '_' are allowed" }
+
+  validate :user_name_can_be_changed_once
 
   has_many :notifications
 
@@ -82,6 +106,11 @@ class User < ApplicationRecord
 
   has_many :push_subscriptions, dependent: :destroy
 
+
+  def self.find_by_uid_or_user_name!(some)
+    User.where(uid: some).or(User.where(user_name: some)).first!
+  end
+
   def open_games = games.unscope(:order).order(updated_at: :desc).open.or(not_seen_games.unscope(:order).closed).includes(:player_2, :player_1)
   def closed_games = seen_games.unscope(:order).order(updated_at: :desc).closed.includes(:player_1, :player_2).limit(20)
   def random_game = games.where(player_2_id: nil).includes(:player_1).first
@@ -134,6 +163,14 @@ class User < ApplicationRecord
       )
     rescue Webpush::ExpiredSubscription => e_
       sub.destroy
+    end
+  end
+
+  private
+
+  def user_name_can_be_changed_once
+    if user_name_changed? && user_name_changed_at.present?
+      errors.add(:user_name, "can't change more than once")
     end
   end
 end

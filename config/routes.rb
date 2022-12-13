@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       end
       resources :users, only: [:show] do
         collection do
+          get "name_valid"
           get "me"
           post "push"
           post "update"

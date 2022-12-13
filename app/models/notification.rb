@@ -13,8 +13,8 @@ class Notification < ApplicationRecord
   }
 
   PAYLOAD = {
-    friend_request: -> (from) { { action: ACTIONS[:friend_request], uid: from.uid, name: from.name } },
-    friend_accept: -> (from) { { action: ACTIONS[:friend_accept], uid: from.uid, name: from.name } },
+    friend_request: -> (from) { { action: ACTIONS[:friend_request], uid: from.user_name, name: from.name } },
+    friend_accept: -> (from) { { action: ACTIONS[:friend_accept], uid: from.user_name, name: from.name } },
     game_created: -> (game) { { action: ACTIONS[:game_created], uid: game.uid, name: game.player_1.name } },
     random_game_accepted: -> (game) { { action: ACTIONS[:random_game_accepted], uid: game.uid, name: game.player_2.name } }
   }
