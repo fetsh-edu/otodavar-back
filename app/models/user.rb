@@ -111,9 +111,9 @@ class User < ApplicationRecord
     User.where(uid: some).or(User.where(user_name: some)).first!
   end
 
-  def open_games = games.unscope(:order).order(updated_at: :desc).open.or(not_seen_games.unscope(:order).closed).includes(:player_2, :player_1)
-  def closed_games = seen_games.unscope(:order).order(updated_at: :desc).closed.includes(:player_1, :player_2).limit(20)
-  def random_game = games.where(player_2_id: nil).includes(:player_1).first
+  def open_games = games.unscope(:order).order(updated_at: :desc).open.or(not_seen_games.unscope(:order).closed)
+  def closed_games = seen_games.unscope(:order).order(updated_at: :desc).closed.limit(20)
+  def random_game = games.where(player_2_id: nil).first
 
   def add_friend(user)
     outgoing_friend_requests.create(friend: user)

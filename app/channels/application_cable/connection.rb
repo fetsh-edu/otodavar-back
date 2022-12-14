@@ -3,7 +3,6 @@ module ApplicationCable
     identified_by :current_user
     def connect
       self.current_user = find_verified_user
-      Rails.logger.info current_user.inspect
     end
 
     private

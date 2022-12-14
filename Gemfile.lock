@@ -79,6 +79,7 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     bcrypt (3.1.18)
+    benchmark-ips (2.10.0)
     bindex (0.8.1)
     bootsnap (1.13.0)
       msgpack (~> 1.2)
@@ -310,6 +311,7 @@ PLATFORMS
 
 DEPENDENCIES
   api_error_handler
+  benchmark-ips
   bootsnap
   capistrano
   capistrano-asdf

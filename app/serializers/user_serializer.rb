@@ -5,7 +5,7 @@ class UserSerializer < Panko::Serializer
 
   FILTERS = {
     simple:       { only: [ :email, :avatar, :name, :uid, :friend_status, :user_name ] },
-    simple_me:       { only: [ :email, :avatar, :name, :uid, :friend_status, :telegram_id, :user_name, :user_name_changed_at ] },
+    simple_me:    { only: [ :email, :avatar, :name, :uid, :friend_status, :telegram_id, :user_name, :user_name_changed_at ] },
     me:           { only: [ :email, :avatar, :name, :uid, :friend_status, :friends, :incoming_friends, :outgoing_friends, :telegram_id, :user_name, :user_name_changed_at ] },
     full:         {},
     friend:       { only: [ :email, :avatar, :name, :uid, :friend_status, :games_count, :friends_count, :friends, :user_name ] },
@@ -21,7 +21,7 @@ class UserSerializer < Panko::Serializer
     end
   end
 
-  def friend_status = current_user.friend_status_of(object)
+  def friend_status = cache.friend_status(object)
 
   def games_count = object.games.count
 
@@ -37,6 +37,7 @@ class UserSerializer < Panko::Serializer
   has_many :outgoing_friends, each_serializer: UserSerializer, scope: { filter: :simple }
 
   private
+  def cache = context[:cache] || SerializerCache.new(context[:current_user].id, context[:current_user])
 
   def current_user
     context[:current_user]
