@@ -9,7 +9,7 @@ class Api::V1::GamesController < Api::ApiController
   end
 
   def index
-    render json: HomeSerializer.new(context: {current_user: current_user}).serialize_to_json(current_user),
+    render json: HomeSerializer.new(context: {current_user: current_user, cache: SerializerCache.new(current_user.id, current_user)}).serialize_to_json(current_user),
            status: :ok
   end
 
