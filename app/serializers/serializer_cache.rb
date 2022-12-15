@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class SerializerCache
+  def self.for(obj)
+    if obj.instance_of?(User)
+      new(obj.id, obj)
+    else
+      new(obj)
+    end
+  end
   def initialize(user_id, user = nil )
     @user = user
     @user_id = user_id
@@ -22,7 +29,7 @@ class SerializerCache
   def player(player_id)
     players[player_id] ||= begin
                              player = User.where(id: player_id).first
-                             UserSerializer.new(scope: { filter: :simple }, context: { current_user: user, cache: self }).serialize(player)
+                             UserSerializer.new(scope: { filter: :simple }, context: { cache: self }).serialize(player)
                            end
   end
 

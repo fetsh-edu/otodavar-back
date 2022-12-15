@@ -15,6 +15,6 @@ class GameSerializer < Panko::Serializer
   has_many :words,                each_serializer: WordSerializer
 
   def cache
-    context[:cache] || SerializerCache.new(context[:current_user].id)
+    context[:cache]
   end
 end

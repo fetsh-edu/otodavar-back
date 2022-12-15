@@ -20,7 +20,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         json: Panko::Response.create do |r|
           {
             status: {code: 200, message: 'Signed up successfully.'},
-            data: r.serializer(resource, UserSerializer, context: { current_user: resource })
+            data: r.serializer(resource, UserSerializer, context: { cache: SerializerCache.for(resource) })
           }
         end
       )

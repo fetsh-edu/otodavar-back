@@ -9,7 +9,7 @@ class Api::V1::GamesController < Api::ApiController
   end
 
   def index
-    render json: HomeSerializer.new(context: {current_user: current_user, cache: SerializerCache.new(current_user.id, current_user)}).serialize_to_json(current_user),
+    render json: HomeSerializer.new(context: { cache: SerializerCache.for(current_user) }).serialize_to_json(current_user),
            status: :ok
   end
 
@@ -41,7 +41,7 @@ class Api::V1::GamesController < Api::ApiController
   private
 
   def respond_with_game(resource)
-    render json: GameSerializer.new(except: [:last_words], context: {current_user: current_user}).serialize_to_json(resource),
+    render json: GameSerializer.new(except: [:last_words], context: { cache: SerializerCache.for(current_user) }).serialize_to_json(resource),
            status: :ok
   end
 

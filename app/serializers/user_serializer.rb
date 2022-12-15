@@ -37,10 +37,8 @@ class UserSerializer < Panko::Serializer
   has_many :outgoing_friends, each_serializer: UserSerializer, scope: { filter: :simple }
 
   private
-  def cache = context[:cache] || SerializerCache.new(context[:current_user].id, context[:current_user])
-
-  def current_user
-    context[:current_user]
+  def cache
+    context[:cache]
   end
 
 end

@@ -6,7 +6,11 @@ class WordSerializer < Panko::Serializer
   end
 
   def cache
-    context[:cache] || SerializerCache.new(object.user_id)
+    if context
+      context[:cache]
+    else
+      SerializerCache.new(object.user_id)
+    end
   end
 
 end

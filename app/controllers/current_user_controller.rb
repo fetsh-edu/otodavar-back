@@ -5,7 +5,7 @@ class CurrentUserController < ApplicationController
       status: :ok,
       json: Panko::Response.create do |r|
         {
-          user: r.serializer(current_user, UserSerializer, context: { current_user: current_user})
+          user: r.serializer(current_user, UserSerializer, context: { cache: SerializerCache.for(current_user) })
         }
       end
     )

@@ -18,7 +18,7 @@ class Api::V1::WordsController < Api::ApiController
     if Word.stamps.keys.include?(params[:stamp]) && @word.game.of_player?(current_user.id)
       @word.stamp = params[:stamp]
       if @word.save
-        GameChannel.broadcast_to(@word.game, WordSerializer.new.serialize(@word))
+        GameChannel.broadcast_to(@word.game, WordSerializer.new(context: { cache: SerializerCache.for(current_user) }).serialize(@word))
       end
     end
     # TODO:
@@ -26,7 +26,7 @@ class Api::V1::WordsController < Api::ApiController
   end
 
   def respond_with_game(resource)
-    render json: GameSerializer.new(except: [:last_words], context: {current_user: current_user}).serialize_to_json(resource),
+    render json: GameSerializer.new(except: [:last_words], context: { cache: SerializerCache.for(current_user) }).serialize_to_json(resource),
            status: :ok
   end
 

@@ -31,12 +31,12 @@ class Api::V1::UsersController < Api::ApiController
         current_user.update(telegram_id: params[:telegram][:id])
       end
     end
-    render json: UserSerializer.new(scope: { filter: :simple_me }, context: {current_user: current_user}).serialize_to_json(current_user.reload),
+    render json: UserSerializer.new(scope: { filter: :simple_me }, context: { cache: SerializerCache.for(current_user) }).serialize_to_json(current_user.reload),
            status: :ok
   end
 
   def me
-    render json: UserSerializer.new(scope: {filter: :simple_me}, context: {current_user: current_user}).serialize_to_json(current_user),
+    render json: UserSerializer.new(scope: {filter: :simple_me}, context: { cache: SerializerCache.for(current_user) }).serialize_to_json(current_user),
            status: :ok
   end
 
@@ -130,7 +130,7 @@ class Api::V1::UsersController < Api::ApiController
 
   def respond_with(resource, _opts = {})
     json = UserSerializer.new(
-             context: {current_user: current_user},
+             context: { cache: SerializerCache.for(current_user) },
              scope: UserSerializer.scope_builder(current_user, resource)
            ).serialize_to_json(resource)
     render json: json,
