@@ -69,7 +69,7 @@ class User < ApplicationRecord
 
   has_many :friends,
            ->(user) {
-             UsersQuery.friends(user_id: user.id, scope: true)
+             UsersQuery.friends(user_id: user.id, scope: true).order(:user_name)
            },
            through: :friendships
 
