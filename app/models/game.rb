@@ -24,18 +24,27 @@ class Game < ApplicationRecord
 
   default_scope { order(created_at: :desc) }
 
+  scope :order_by_updated, -> { unscope(:order).order(updated_at: :desc) }
+
   scope :between, -> (a, b) { where(player_1_id: a.id, player_2_id: b.id).or(where(player_1_id: b.id, player_2_id: a.id)) }
   scope :ready, -> { unscoped.open.order(created_at: :asc).where(player_2_id: nil) }
   scope :ready_for, -> (user) { ready.where.not(player_1_id: (user.friends.pluck(:id) << user.id)) }
 
-  def finish
-    guess = words.order(round_id: :desc).limit(2)
-    Rails.logger.info guess.inspect
-    return unless guess.count == 2
-    return if guess.map(&:round_id).uniq.size != 1
-    return if guess.map(&:word).uniq.size != 1
+  def on_word_created(word)
+    self.last_word_user_id = word.user_id
+    finish
+    save
+  end
 
-    closed!
+  def finish
+    return unless words_count % 2 == 0
+
+    self.status = 'closed' if words
+                               .order(round_id: :desc)
+                               .limit(2)
+                               .map { |w| [ w.round_id, w.word ] }
+                               .uniq
+                               .size == 1
   end
 
   def opponent(player_id)

@@ -1,5 +1,5 @@
 class Word < ApplicationRecord
-  belongs_to :game, touch: true
+  belongs_to :game, touch: true, counter_cache: true
   belongs_to :user
 
   enum :stamp,
@@ -20,7 +20,7 @@ class Word < ApplicationRecord
   validate :user_should_be_of_game, :should_be_new_or_an_answer
 
   before_save :normalize_word
-  after_save :finish_game
+  after_save :mark_game
 
 
   def opposite
@@ -33,8 +33,8 @@ class Word < ApplicationRecord
   def normalize_word
     self.word = self.word.upcase.strip
   end
-  def finish_game
-    game.finish
+  def mark_game
+    game.on_word_created(self)
     true
   end
   def should_be_new_or_an_answer

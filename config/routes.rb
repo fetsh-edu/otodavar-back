@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       resources :games, only: [:index, :show] do
         collection do
           post "join"
+          get "stalled"
         end
         member do
           post 'archive'

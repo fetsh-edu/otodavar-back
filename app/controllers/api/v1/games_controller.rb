@@ -13,6 +13,18 @@ class Api::V1::GamesController < Api::ApiController
            status: :ok
   end
 
+  def stalled
+    render json: Panko::ArraySerializer.new(
+                    current_user.stalled_games,
+                    {
+                      each_serializer: GameSerializer,
+                      except: [ :words ],
+                      context: { cache: SerializerCache.for(current_user) }
+                    }
+                 ).to_json,
+           status: :ok
+  end
+
   def archive
     resource = Game.find_by_uid!(params[:id])
 

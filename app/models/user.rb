@@ -111,8 +111,26 @@ class User < ApplicationRecord
     User.where(uid: some).or(User.where(user_name: some)).first!
   end
 
-  def open_games = games.unscope(:order).order(updated_at: :desc).open.or(not_seen_games.unscope(:order).closed)
-  def closed_games = seen_games.unscope(:order).order(updated_at: :desc).closed.limit(20)
+
+  def open_games = games
+                     .open
+                     .order_by_updated
+
+  def win_games = not_seen_games
+                    .closed
+                    .order_by_updated
+
+  def my_turn_games = open_games
+                        .where("`games`.`words_count` % 2 = 0 OR `games`.`last_word_user_id` != ?", id)
+
+  def stalled_games = open_games
+                  .where("`games`.`words_count` % 2 != 0 AND `games`.`last_word_user_id` = ?", id)
+  def stalled_preview = stalled_games.limit(10)
+  def closed_games = seen_games
+                       .order_by_updated
+                       .closed
+                       .limit(20)
+
   def random_game = games.where(player_2_id: nil).first
 
   def add_friend(user)
