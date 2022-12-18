@@ -7,7 +7,7 @@ class HomeSerializer < Panko::Serializer
   has_many :closed_games,        each_serializer: GameSerializer, except: [ :words ]
   has_one :random_game,          serializer: GameSerializer, except: [ :words ]
 
-  def stalled_count = 1 || object.stalled_preview.count
+  def stalled_count = object.stalled_preview.count
   def total_stalled_count = object.stalled_games.count
 
 end
