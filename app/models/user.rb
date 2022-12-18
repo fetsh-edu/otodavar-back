@@ -137,6 +137,10 @@ class User < ApplicationRecord
     outgoing_friend_requests.create(friend: user)
   end
 
+  def common_games(user_id) = Game
+                                .where(player_1_id: id, player_2_id: user_id)
+                                .or(Game.where(player_2_id: id, player_1_id: user_id))
+
   def remove_friend(user)
     return if id == user.id
     Friendship.between(user, self).delete_all
