@@ -1,12 +1,13 @@
 class UserSerializer < Panko::Serializer
 
   attributes :uid, :email, :avatar, :name, :friend_status,
-             :games_count, :friends_count, :telegram_id, :user_name, :user_name_changed_at, :common_open_games, :common_closed_games
+             :games_count, :friends_count,
+             :telegram_id, :user_name, :user_name_changed_at,
+             :common_open_games, :common_closed_games,
 
   FILTERS = {
     simple:       { only:   [ :email, :avatar, :name, :uid, :friend_status, :user_name ] },
     simple_me:    { only:   [ :email, :avatar, :name, :uid, :friend_status, :telegram_id, :user_name, :user_name_changed_at ] },
-    me:           { only:   [ :email, :avatar, :name, :uid, :friend_status, :friends, :incoming_friends, :outgoing_friends, :telegram_id, :user_name, :user_name_changed_at ] },
     full:         { except: [ :common_open_games, :common_closed_games ] },
     friend:       { only:   [ :email, :avatar, :name, :uid, :friend_status, :games_count, :friends_count, :user_name, :friends, :common_open_games, :common_closed_games ] },
     acquaintance: { only:   [ :email, :avatar, :name, :uid, :friend_status, :games_count, :friends_count, :user_name ] }
@@ -52,9 +53,10 @@ class UserSerializer < Panko::Serializer
     FILTERS[scope[:filter]] || FILTERS[:simple]
   end
 
-  has_many :friends,          each_serializer: UserSerializer, scope: { filter: :simple }
-  has_many :incoming_friends, each_serializer: UserSerializer, scope: { filter: :simple }
-  has_many :outgoing_friends, each_serializer: UserSerializer, scope: { filter: :simple }
+  has_many :friends,           each_serializer: UserSerializer, scope: { filter: :simple }
+  has_many :suggested_friends, each_serializer: UserSerializer, scope: { filter: :simple }
+  has_many :incoming_friends,  each_serializer: UserSerializer, scope: { filter: :simple }
+  has_many :outgoing_friends,  each_serializer: UserSerializer, scope: { filter: :simple }
 
   private
   def cache

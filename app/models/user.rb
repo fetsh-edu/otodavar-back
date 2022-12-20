@@ -73,6 +73,27 @@ class User < ApplicationRecord
            },
            through: :friendships
 
+  has_many :suggested_friends_unsorted,
+           ->(user) {
+             User
+               .unscope(where: :user_id)
+               .from('friendships')
+               .joins("INNER JOIN friendships f2 ON (friendships.user_id = f2.user_id OR friendships.user_id = f2.friend_id OR friendships.friend_id = f2.user_id OR friendships.friend_id = f2.friend_id)")
+               .joins("INNER JOIN users u ON (f2.user_id = u.id OR f2.friend_id = u.id)")
+               .where("friendships.user_id = ? OR friendships.friend_id = ?", user.id, user.id)
+               .where.not(u: {id: user.id})
+               .where(friendships: {confirmed: true})
+               .where(f2: {confirmed: true})
+               .where("u.id NOT IN (SELECT friend_id FROM friendships WHERE user_id = ? UNION SELECT user_id FROM friendships WHERE friend_id = ?)", user.id, user.id)
+               .group("u.id")
+               .select("COUNT(u.id) as cnt, u.id, u.name, u.user_name, u.uid, u.email, u.avatar")
+           },
+           class_name: 'User'
+
+  def suggested_friends
+    suggested_friends_unsorted.sort_by{|a| a.cnt * -1  }
+  end
+
   has_many :outgoing_games,
            class_name: "Game",
            foreign_key: :player_1_id,

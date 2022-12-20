@@ -30,7 +30,7 @@ class Users::SessionsController < Devise::SessionsController
       json: Panko::Response.create do |r|
         {
           status: { code: 200, message: 'Logged in successfully.' },
-          data: r.serializer(resource, UserSerializer, context: { cache: SerializerCache.for(resource) }, scope: { filter: :me } )
+          data: r.serializer(resource, UserSerializer, context: { cache: SerializerCache.for(resource) }, scope: { filter: :simple_me } )
         }
       end
     )
