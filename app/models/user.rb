@@ -184,7 +184,7 @@ class User < ApplicationRecord
     friends.exists?(user.id)
   end
 
-  def push_notification(message = 'Message from oto | davar')
+  def push_notification(message = 'Message from oto|davar')
     subs = self.push_subscriptions.reload
     return if subs.empty?
 

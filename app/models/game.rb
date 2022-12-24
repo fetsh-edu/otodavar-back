@@ -9,6 +9,7 @@ class Game < ApplicationRecord
   end
 
   paginates_per 5
+  max_pages 99
 
   before_save :generate_uid
 
