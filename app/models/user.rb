@@ -146,11 +146,9 @@ class User < ApplicationRecord
 
   def stalled_games = open_games
                   .where("`games`.`words_count` % 2 != 0 AND `games`.`last_word_user_id` = ?", id)
-  def stalled_preview = stalled_games.limit(10)
   def closed_games = seen_games
                        .order_by_updated
                        .closed
-                       .limit(20)
 
   def random_game = games.where(player_2_id: nil).first
 

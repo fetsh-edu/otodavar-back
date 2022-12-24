@@ -14,15 +14,13 @@ class Api::V1::GamesController < Api::ApiController
   end
 
   def stalled
-    render json: Panko::ArraySerializer.new(
-                    current_user.stalled_games,
-                    {
-                      each_serializer: GameSerializer,
-                      except: [ :words ],
-                      context: { cache: SerializerCache.for(current_user) }
-                    }
-                 ).to_json,
-           status: :ok
+    items = current_user.stalled_games
+    render json: render_items(items), status: :ok
+  end
+
+  def archived
+    items = current_user.closed_games
+    render json: render_items(items), status: :ok
   end
 
   def archive
@@ -51,6 +49,29 @@ class Api::V1::GamesController < Api::ApiController
   end
 
   private
+
+  def render_items(items)
+    items = if params[:page].to_i < 1
+              items.page(1)
+            else
+              items.page(params[:page])
+            end
+
+    items = items.page(items.total_pages) if params[:page].to_i > items.total_pages
+
+    Panko::Response.new(
+      page: items.current_page,
+      total_pages: items.total_pages,
+      items: Panko::ArraySerializer.new(
+        items,
+        {
+          each_serializer: GameSerializer,
+          except: [ :words ],
+          context: { cache: SerializerCache.for(current_user) }
+        }
+      )
+    )
+  end
 
   def respond_with_game(resource)
     render json: GameSerializer.new(except: [:last_words], context: { cache: SerializerCache.for(current_user) }).serialize_to_json(resource),

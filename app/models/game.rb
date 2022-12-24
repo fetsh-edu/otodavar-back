@@ -8,6 +8,8 @@ class Game < ApplicationRecord
     end
   end
 
+  paginates_per 5
+
   before_save :generate_uid
 
   validate :cant_play_with_myself

@@ -9,6 +9,7 @@ Rails.application.routes.draw do
         collection do
           post "join"
           get "stalled"
+          get "archived"
         end
         member do
           post 'archive'

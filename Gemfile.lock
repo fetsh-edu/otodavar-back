@@ -165,6 +165,10 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     jwt (2.5.0)
+    kaminari-activerecord (1.2.2)
+      activerecord
+      kaminari-core (= 1.2.2)
+    kaminari-core (1.2.2)
     loofah (2.19.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -326,6 +330,7 @@ DEPENDENCIES
   importmap-rails
   interactor (~> 3.0)
   jbuilder
+  kaminari-activerecord
   mysql2
   panko_serializer
   puma (~> 5.0)
